@@ -1,6 +1,8 @@
 package com.qa.lbg.rest;
 
 import com.qa.lbg.domain.Cat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,9 +21,10 @@ public class CatController {
     }
 
     @PostMapping("/cat/new")
-    public Cat createCat(@RequestBody Cat newCat) {
+    public ResponseEntity<Cat> createCat(@RequestBody Cat newCat) {
         this.cats.add(newCat);
-        return this.cats.get(this.cats.size() - 1);
+        Cat added = this.cats.get(this.cats.size() - 1);
+        return new ResponseEntity<>(added, HttpStatus.CREATED);
     }
 
     @GetMapping("/cat/all")
@@ -30,8 +33,10 @@ public class CatController {
     }
 
     @GetMapping("/cat/{id}")
-    public Cat getCat(@PathVariable Integer id) {
-        return this.cats.get(id);
+    public ResponseEntity<?> getCat(@PathVariable Integer id) {
+        if (id == null || id < 0 || id >= this.cats.size())
+            return new ResponseEntity<>("No cat found with id: " + id, HttpStatus.NOT_FOUND);
+        else return ResponseEntity.ok(this.cats.get(id));
     }
 
 
