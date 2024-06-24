@@ -56,7 +56,6 @@ public class CatController {
 
     @DeleteMapping("/cat/{id}")
     public Cat removeCat(@PathVariable Integer id) {
-        Cat toRemove = this.cats.get(id);
         return this.cats.remove(id.intValue());
     }
 }
