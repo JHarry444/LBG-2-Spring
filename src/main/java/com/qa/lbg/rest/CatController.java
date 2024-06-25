@@ -1,6 +1,7 @@
 package com.qa.lbg.rest;
 
 import com.qa.lbg.domain.Cat;
+import com.qa.lbg.service.CatService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,11 @@ import java.util.List;
 @RestController
 public class CatController {
 
-    private final List<Cat> cats = new ArrayList<>();
+    private CatService service;
+
+    public CatController(CatService service) {
+        this.service = service;
+    }
 
     // this method will be called when a GET request is sent to /hello
     @GetMapping("/hello")
@@ -22,21 +27,17 @@ public class CatController {
 
     @PostMapping("/cat/new")
     public ResponseEntity<Cat> createCat(@RequestBody Cat newCat) {
-        this.cats.add(newCat);
-        Cat added = this.cats.get(this.cats.size() - 1);
-        return new ResponseEntity<>(added, HttpStatus.CREATED);
+        return this.service.createCat(newCat);
     }
 
     @GetMapping("/cat/all")
     public List<Cat> getAll() {
-        return this.cats;
+        return this.service.getAll();
     }
 
     @GetMapping("/cat/{id}")
     public ResponseEntity<?> getCat(@PathVariable Integer id) {
-        if (id == null || id < 0 || id >= this.cats.size())
-            return new ResponseEntity<>("No cat found with id: " + id, HttpStatus.NOT_FOUND);
-        else return ResponseEntity.ok(this.cats.get(id));
+        return this.service.getCat(id);
     }
 
 
@@ -47,22 +48,11 @@ public class CatController {
                          @RequestParam(name = "age", required = false) Integer age,
                          @RequestParam(name = "nature", required = false) String nature,
                          @RequestParam(name = "lives", required = false) Integer lives) {
-
-        Cat toUpdate = this.cats.get(id);
-
-        if (name != null) toUpdate.setName(name);
-        if (colour != null) toUpdate.setColour(colour);
-        if (age != null) toUpdate.setAge(age);
-        if (nature != null) toUpdate.setNature(nature);
-        if (lives != null) toUpdate.setLives(lives);
-
-        return toUpdate;
+    return this.service.updateCat(id, name, colour, age, nature, lives);
     }
 
     @DeleteMapping("/cat/{id}")
     public ResponseEntity<?> removeCat(@PathVariable Integer id) {
-        if (id == null || id < 0 || id >= this.cats.size())
-            return new ResponseEntity<>("No cat found with id: " + id, HttpStatus.NOT_FOUND);
-        else return ResponseEntity.ok(this.cats.remove(id.intValue()));
+        return this.service.removeCat(id);
     }
 }
