@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 public class CatController {
 
-    private List<Cat> cats = new ArrayList<>();
+    private final List<Cat> cats = new ArrayList<>();
 
     // this method will be called when a GET request is sent to /hello
     @GetMapping("/hello")
@@ -60,7 +60,9 @@ public class CatController {
     }
 
     @DeleteMapping("/cat/{id}")
-    public Cat removeCat(@PathVariable Integer id) {
-        return this.cats.remove(id.intValue());
+    public ResponseEntity<?> removeCat(@PathVariable Integer id) {
+        if (id == null || id < 0 || id >= this.cats.size())
+            return new ResponseEntity<>("No cat found with id: " + id, HttpStatus.NOT_FOUND);
+        else return ResponseEntity.ok(this.cats.remove(id.intValue()));
     }
 }
