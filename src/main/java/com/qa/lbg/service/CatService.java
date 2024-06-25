@@ -38,12 +38,15 @@ public class CatService {
         return ResponseEntity.ok(found);
     }
 
-    public Cat updateCat(Integer id,
-                         String name,
-                         String colour,
-                         Integer age,
-                         String nature,
-                         Integer lives) {
+    public ResponseEntity<?> updateCat(Integer id,
+                                         String name,
+                                         String colour,
+                                         Integer age,
+                                         String nature,
+                                         Integer lives) {
+        if (!this.repo.existsById(id))
+            return new ResponseEntity<>("No cat found with id: " + id, HttpStatus.NOT_FOUND);
+
         Cat toUpdate = this.repo.findById(id).get();
 
         if (name != null) toUpdate.setName(name);
@@ -55,10 +58,13 @@ public class CatService {
 
         Cat updated = this.repo.save(toUpdate);
 
-        return updated;
+        return ResponseEntity.ok(updated);
     }
 
     public ResponseEntity<?> removeCat(Integer id) {
+        if (!this.repo.existsById(id))
+            return new ResponseEntity<>("No cat found with id: " + id, HttpStatus.NOT_FOUND);
+
         Cat found = this.repo.findById(id).get();
 
         this.repo.deleteById(id);

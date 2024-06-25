@@ -42,7 +42,7 @@ public class CatController {
 
 
     @PatchMapping("/cat/{id}")
-    public Cat updateCat(@PathVariable(name = "id") Integer id,
+    public ResponseEntity<?> updateCat(@PathVariable(name = "id") Integer id,
                          @RequestParam(name = "name", required = false) String name,
                          @RequestParam(name = "colour", required = false) String colour,
                          @RequestParam(name = "age", required = false) Integer age,
