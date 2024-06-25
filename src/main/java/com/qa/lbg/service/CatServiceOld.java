@@ -1,42 +1,34 @@
 package com.qa.lbg.service;
 
 import com.qa.lbg.domain.Cat;
-import com.qa.lbg.repos.CatRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class CatService {
+//@Service
+public class CatServiceOld {
 
-    private CatRepo repo;
-
-    public CatService(CatRepo repo) {
-        this.repo = repo;
-    }
+    private final List<Cat> cats = new ArrayList<>();
 
     public ResponseEntity<Cat> createCat(Cat newCat) {
-        Cat created = this.repo.save(newCat);
-
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        this.cats.add(newCat);
+        Cat added = this.cats.get(this.cats.size() - 1);
+        return new ResponseEntity<>(added, HttpStatus.CREATED);
     }
 
     public List<Cat> getAll() {
-        return this.repo.findAll();
+        return this.cats;
     }
 
     public ResponseEntity<?> getCat(Integer id) {
-        if (!this.repo.existsById(id))
+        if (id == null || id < 0 || id >= this.cats.size())
             return new ResponseEntity<>("No cat found with id: " + id, HttpStatus.NOT_FOUND);
-
-        Cat found = this.repo.findById(id).get();
-        // missing not found logic
-        return ResponseEntity.ok(found);
+        else return ResponseEntity.ok(this.cats.get(id));
     }
+
 
     public Cat updateCat(Integer id,
                          String name,
@@ -44,7 +36,8 @@ public class CatService {
                          Integer age,
                          String nature,
                          Integer lives) {
-        Cat toUpdate = this.repo.findById(id).get();
+
+        Cat toUpdate = this.cats.get(id);
 
         if (name != null) toUpdate.setName(name);
         if (colour != null) toUpdate.setColour(colour);
@@ -52,18 +45,13 @@ public class CatService {
         if (nature != null) toUpdate.setNature(nature);
         if (lives != null) toUpdate.setLives(lives);
 
-
-        Cat updated = this.repo.save(toUpdate);
-
-        return updated;
+        return toUpdate;
     }
 
     public ResponseEntity<?> removeCat(Integer id) {
-        Cat found = this.repo.findById(id).get();
-
-        this.repo.deleteById(id);
-
-        return ResponseEntity.ok(found);
+        if (id == null || id < 0 || id >= this.cats.size())
+            return new ResponseEntity<>("No cat found with id: " + id, HttpStatus.NOT_FOUND);
+        else return ResponseEntity.ok(this.cats.remove(id.intValue()));
     }
 
 
