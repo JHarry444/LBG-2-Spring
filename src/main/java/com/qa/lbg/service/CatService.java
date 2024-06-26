@@ -5,10 +5,9 @@ import com.qa.lbg.repos.CatRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CatService {
@@ -39,15 +38,17 @@ public class CatService {
     }
 
     public ResponseEntity<?> updateCat(Integer id,
-                                         String name,
-                                         String colour,
-                                         Integer age,
-                                         String nature,
-                                         Integer lives) {
-        if (!this.repo.existsById(id))
-            return new ResponseEntity<>("No cat found with id: " + id, HttpStatus.NOT_FOUND);
+                                       String name,
+                                       String colour,
+                                       Integer age,
+                                       String nature,
+                                       Integer lives) {
 
-        Cat toUpdate = this.repo.findById(id).get();
+        Optional<Cat> found = this.repo.findById(id);
+
+        if (found.isEmpty()) return new ResponseEntity<>("No cat found with id: " + id, HttpStatus.NOT_FOUND);
+
+        Cat toUpdate = found.get();
 
         if (name != null) toUpdate.setName(name);
         if (colour != null) toUpdate.setColour(colour);
