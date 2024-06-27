@@ -1,11 +1,13 @@
 package com.qa.lbg.service;
 
 import com.qa.lbg.domain.Cat;
+import com.qa.lbg.dtos.CatDto;
 import com.qa.lbg.repos.CatRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,8 +26,16 @@ public class CatService {
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    public List<Cat> getAll() {
-        return this.repo.findAll();
+    public List<CatDto> getAll() {
+        List<Cat> found =  this.repo.findAll();
+        List<CatDto> dtos = new ArrayList<>();
+
+
+        for (Cat cat : found) {
+            dtos.add(new CatDto(cat));
+        }
+
+        return dtos;
     }
 
     public ResponseEntity<?> getCat(Integer id) {

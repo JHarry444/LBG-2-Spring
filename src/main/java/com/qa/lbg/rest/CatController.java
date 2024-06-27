@@ -1,6 +1,7 @@
 package com.qa.lbg.rest;
 
 import com.qa.lbg.domain.Cat;
+import com.qa.lbg.dtos.CatDto;
 import com.qa.lbg.service.CatService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class CatController {
     }
 
     @GetMapping("/cat/all")
-    public List<Cat> getAll() {
+    public List<CatDto> getAll() {
         return this.service.getAll();
     }
 

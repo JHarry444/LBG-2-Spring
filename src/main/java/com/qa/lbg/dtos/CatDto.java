@@ -1,14 +1,13 @@
-package com.qa.lbg.domain;
+package com.qa.lbg.dtos;
 
-import jakarta.persistence.*;
+import com.qa.lbg.domain.Cat;
+import com.qa.lbg.domain.Toy;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity // flags the class as a db entity
-public class Cat {
+public class CatDto {
 
-    @Id // flags the field as a PK
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // makes the field AUTO_INCREMENT
     private Integer id;
 
     private String name;
@@ -21,17 +20,29 @@ public class Cat {
 
     private int lives;
 
-    // mapped by -> the name of the field in the other entity
-    // purely a java concept
-    @OneToMany(mappedBy = "cat")
-    private List<Toy> toys;
+    private List<ToyDto> toys = new ArrayList<>();
 
     // REQUIRED
-    public Cat() {
+    public CatDto() {
         super();
     }
 
-    public Cat(Integer id, String name, String colour, int age, String nature, int lives) {
+    public CatDto(Cat cat) {
+        this.id = cat.getId();
+        this.name = cat.getName();
+        this.colour = cat.getColour();
+        this.age = cat.getAge();
+        this.nature = cat.getNature();
+        this.lives = cat.getLives();
+        if (cat.getToys() != null) {
+            for (Toy toy : cat.getToys()) {
+                this.toys.add(new ToyDto(toy));
+            }
+        }
+
+    }
+
+    public CatDto(Integer id, String name, String colour, int age, String nature, int lives) {
         this.id = id;
         this.name = name;
         this.colour = colour;
@@ -89,22 +100,11 @@ public class Cat {
         this.lives = lives;
     }
 
-    public List<Toy> getToys() {
+    public List<ToyDto> getToys() {
         return toys;
     }
 
-    public void setToys(List<Toy> toys) {
+    public void setToys(List<ToyDto> toys) {
         this.toys = toys;
-    }
-
-    @Override
-    public String toString() {
-        return "Cat{" +
-                "name='" + name + '\'' +
-                ", colour='" + colour + '\'' +
-                ", age=" + age +
-                ", nature='" + nature + '\'' +
-                ", lives=" + lives +
-                '}';
     }
 }
