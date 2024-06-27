@@ -1,11 +1,15 @@
 package com.qa.lbg.service;
 
+import com.qa.lbg.domain.Cat;
 import com.qa.lbg.domain.Toy;
+import com.qa.lbg.dtos.CatDto;
+import com.qa.lbg.dtos.ToyDto;
 import com.qa.lbg.repos.ToyRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,14 +23,19 @@ public class ToyService {
     }
 
 
-    public ResponseEntity<Toy> createToy(Toy newToy) {
+    public ResponseEntity<ToyDto> createToy(Toy newToy) {
         Toy created = this.repo.save(newToy);
 
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return new ResponseEntity<>(new ToyDto(created), HttpStatus.CREATED);
     }
 
-    public List<Toy> getAll() {
-        return this.repo.findAll();
+    public List<ToyDto> getAll() {
+        List<ToyDto> dtos = new ArrayList<>();
+        List<Toy> found =  this.repo.findAll();
+        for (Toy toy : found) {
+            dtos.add(new ToyDto(toy));
+        }
+        return dtos;
     }
 
     public ResponseEntity<?> getToy(Integer id) {
@@ -35,7 +44,7 @@ public class ToyService {
 
         Toy found = this.repo.findById(id).get();
         // missing not found logic
-        return ResponseEntity.ok(found);
+        return ResponseEntity.ok(new ToyDto(found));
     }
 
     public ResponseEntity<?> updateToy(Integer id,
@@ -56,7 +65,7 @@ public class ToyService {
 
         Toy updated = this.repo.save(toUpdate);
 
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(new ToyDto(updated));
     }
 
     public ResponseEntity<?> removeToy(Integer id) {
@@ -67,6 +76,6 @@ public class ToyService {
 
         this.repo.deleteById(id);
 
-        return ResponseEntity.ok(found);
+        return ResponseEntity.ok(new ToyDto(found));
     }
 }

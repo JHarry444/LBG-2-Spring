@@ -44,7 +44,7 @@ public class CatService {
 
         Cat found = this.repo.findById(id).get();
         // missing not found logic
-        return ResponseEntity.ok(found);
+        return ResponseEntity.ok(new CatDto(found));
     }
 
     public ResponseEntity<?> updateCat(Integer id,
@@ -69,7 +69,7 @@ public class CatService {
 
         Cat updated = this.repo.save(toUpdate);
 
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(new CatDto(updated));
     }
 
     public ResponseEntity<?> removeCat(Integer id) {
@@ -80,7 +80,7 @@ public class CatService {
 
         this.repo.deleteById(id);
 
-        return ResponseEntity.ok(found);
+        return ResponseEntity.ok(new CatDto(found));
     }
 
 

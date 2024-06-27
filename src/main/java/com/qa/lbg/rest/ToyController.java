@@ -1,6 +1,7 @@
 package com.qa.lbg.rest;
 
 import com.qa.lbg.domain.Toy;
+import com.qa.lbg.dtos.ToyDto;
 import com.qa.lbg.service.ToyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +19,12 @@ public class ToyController {
     }
 
     @PostMapping("/toy/new")
-    public ResponseEntity<Toy> createToy(@RequestBody Toy newToy) {
+    public ResponseEntity<ToyDto> createToy(@RequestBody Toy newToy) {
         return this.service.createToy(newToy);
     }
 
     @GetMapping("/toy/all")
-    public List<Toy> getAll() {
+    public List<ToyDto> getAll() {
         return this.service.getAll();
     }
 
