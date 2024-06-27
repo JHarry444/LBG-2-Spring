@@ -16,6 +16,7 @@ public class Toy {
 
     private boolean catnip;
 
+    // Unidirectional relationship
     @ManyToOne
     private Cat cat;
 
